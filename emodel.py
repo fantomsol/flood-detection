@@ -109,15 +109,14 @@ def main():
     test_y = np.load("test_y.npy")
     # previous bug: label values 0 or 255 instead of 0 or 1
     # should perhaps be done in preprocessing
-    test_y = np.divide(train_y, 255)
+    test_y = np.divide(test_y, 255)
+    test_x = [test_x]
+    test_x = tf.expand_dims(test_x, -1)
+    y = model.predict(test_x)
 
-    print(np.shape(test_x))
-    y = model(test_x)
-
-    print("------------------------------------------")
     plt.figure(0)
     plt.gray()
-    plt.imshow(y)
+    plt.imshow(y[0])
     plt.show()
 
     plt.figure(1)
