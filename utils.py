@@ -28,17 +28,18 @@ def filter(data_dir, category):
   for setname in os.listdir(data_dir):
     idx = []
     tiles = os.path.join(data_dir, setname, "tiles")
-    categories = [os.path.join(tiles, c) for c in cats]
-    files = os.listdir(category)
+    cc = os.path.join(tiles, category)
+    files = os.listdir(cc)
     files = fnmatch.filter(files, "*.png")
     
     for i, f in enumerate(files):
-      path = os.path.join(categories[1], f)
+      path = os.path.join(cc, f)
       img = Image.open(path)
       if _blacklist(img):
         idx.append(i)
-    print(categories[1] + ": " + f"{len(idx)}" + " of " + f"{len(files)}" + " noise.")
+    print(cc + ": " + f"{len(idx)}" + " of " + f"{len(files)}" + " noise.")
     
+    categories = [os.path.join(tiles, c) for c in cats]
     for cat in categories:
       files = os.listdir(cat)
       files = fnmatch.filter(files, "*.png")
