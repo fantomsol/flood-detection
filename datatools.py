@@ -24,9 +24,9 @@ class DataSplitter:
     # organize image path names into dictionary structure
     for subdir, dirs, files in os.walk(data_dir):
       category = os.path.basename(subdir)
-      files = fnmatch.filter(files, '*.png')
-      for f in files:
-        if category in set_paths.keys(): 
+      if category in set_paths.keys(): 
+        files = fnmatch.filter(files, '*.png')
+        for f in files:
           set_paths[category].append(os.path.join(subdir, f))
     
     # random shuffle and split
@@ -51,36 +51,54 @@ class DataSplitter:
   
 
 # Subclassed from the Keras API. Feeds model.fit batches of images that are
-# converted into normalized [0,1) float32 arrays where
+# converted into normalized [0,1) float32 arrays
+
+# Updated to use augmentation for flipping UD / LR. Idea is we keep an index list 
+# 4x the size of the actual file list, and let overflow correspond to the transformations
 
 class BatchGenerator(keras.utils.Sequence):
   def __init__(self, set_paths, batch_size):
     self.length = len(set_paths['vv'])
     self.set_paths = set_paths
     self.batch_size = batch_size
+    self.idxlist = np.arange(self.length*4)
     
   def __len__(self):
-    return int(np.ceil(len(self.set_paths['vv']) / self.batch_size))
+    return int(self.length*4 / self.batch_size)
   
   def __getitem__(self, batch_idx):
     x = np.zeros((self.batch_size, 256, 256, 2), dtype='float32')
     y = np.zeros((self.batch_size, 256, 256, 1), dtype='float32')
-    idx = batch_idx * self.batch_size
+    idx_a = batch_idx * self.batch_size
+    idx_b = idx_a + self.batch_size
+    idx_batch = self.idxlist[idx_a : idx_b] #indices to fetch for this batch
     
-    vv = self.set_paths['vv'][idx : idx + self.batch_size]
-    vh = self.set_paths['vh'][idx : idx + self.batch_size]
-    fl = self.set_paths['flood_label'][idx : idx + self.batch_size]
-    
-    b_sz = len(vv) #because we cant assume dataset % batch_size == 0
-    for i in range(b_sz):
-      vv_i = load_img(vv[i], color_mode='grayscale') 
-      vh_i = load_img(vh[i], color_mode='grayscale')
-      fl_i = load_img(fl[i], color_mode='grayscale')
+    for i, k in enumerate(idx_batch):
+      k_arr = k // 4
+      vv_i = load_img(self.set_paths['vv'][k_arr], color_mode='grayscale') 
+      vh_i = load_img(self.set_paths['vh'][k_arr], color_mode='grayscale')
+      fl_i = load_img(self.set_paths['flood_label'][k_arr], color_mode='grayscale')
       x[i, :, :, 0] = np.asarray(vv_i) / 255
       x[i, :, :, 1] = np.asarray(vh_i) / 255
       y[i, ::] = np.expand_dims(fl_i, 2) / 255
       
+      if k % 4 == 1:
+        x = np.flip(x, 1)
+        y = np.flip(y, 1)
+        
+      elif k % 4 == 2:
+        x = np.flip(x, 2)
+        y = np.flip(y, 2)
+        
+      elif k % 4 == 3:
+        x = np.flip(np.flip(x, 1), 2)
+        y = np.flip(np.flip(y, 1), 2)
+        
     return x, y
+  
+  def on_epoch_end(self):
+    random.shuffle(self.idxlist)
+    
 
 ## in case we needed an iterator, which it turned out we didn't
 
