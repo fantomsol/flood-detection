@@ -103,7 +103,13 @@ def main():
     train_y = np.divide(train_y, 255)
 
     model = unet(INPUT_DIMS, class_weight_bias=20)
-    model.fit(train_x, train_y, validation_split=0.1, batch_size=8, epochs=1)
+    history = model.fit(train_x, train_y, validation_split=0.1, batch_size=8, epochs=5, callbacks=tf.keras.callbacks.EarlyStopping(verbose=1, patience=2))
+
+    metrics = history.history
+    plt.plot(history.epoch, metrics['loss'], metrics['val_loss'])
+    plt.legend(['loss', 'val_loss'])
+    plt.show()
+
 
     test_x = np.load("test_x.npy")
     test_y = np.load("test_y.npy")
@@ -143,9 +149,9 @@ def create_subsample(n_samples):
     sample_vh = vh[sample_idx]
     sample_labels = labels[sample_idx]
 
-    vv_test = vv[100]
-    vh_test = vh[100]
-    y_test = labels[100]
+    vv_test = vv[101]
+    vh_test = vh[101]
+    y_test = labels[101]
 
     train_x = np.concatenate((sample_vv, sample_vh), axis=-1)
     test_x = np.concatenate((vv_test,vh_test), axis=-1)
@@ -157,5 +163,5 @@ def create_subsample(n_samples):
 
 
 if __name__ == '__main__':
-    create_subsample(5000)
+    create_subsample(7000)
     main()
