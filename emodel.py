@@ -39,45 +39,45 @@ def main():
         # todo: generalize for parameter search, input feature sizes etc.
 
         # Contraction path
-        c1 = tf.keras.layers.Conv2D(16, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(s)
-        c1 = tf.keras.layers.Conv2D(16, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(c1)
+        c1 = tf.keras.layers.Conv2D(16, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(s)
+        c1 = tf.keras.layers.Conv2D(16, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(c1)
         p1 = tf.keras.layers.MaxPooling2D((2, 2))(c1)
 
-        c2 = tf.keras.layers.Conv2D(32, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(p1)
-        c2 = tf.keras.layers.Conv2D(32, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(c2)
+        c2 = tf.keras.layers.Conv2D(32, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(p1)
+        c2 = tf.keras.layers.Conv2D(32, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(c2)
         p2 = tf.keras.layers.MaxPooling2D((2, 2))(c2)
 
-        c3 = tf.keras.layers.Conv2D(64, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(p2)
-        c3 = tf.keras.layers.Conv2D(64, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(c3)
+        c3 = tf.keras.layers.Conv2D(64, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(p2)
+        c3 = tf.keras.layers.Conv2D(64, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(c3)
         p3 = tf.keras.layers.MaxPooling2D((2, 2))(c3)
 
-        c4 = tf.keras.layers.Conv2D(128, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(p3)
-        c4 = tf.keras.layers.Conv2D(128, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(c4)
+        c4 = tf.keras.layers.Conv2D(128, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(p3)
+        c4 = tf.keras.layers.Conv2D(128, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(c4)
         p4 = tf.keras.layers.MaxPooling2D(pool_size=(2, 2))(c4)
 
-        c5 = tf.keras.layers.Conv2D(256, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(p4)
-        c5 = tf.keras.layers.Conv2D(256, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(c5)
+        c5 = tf.keras.layers.Conv2D(256, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(p4)
+        c5 = tf.keras.layers.Conv2D(256, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(c5)
 
         # Expansive path
         u6 = tf.keras.layers.Conv2DTranspose(128, (2, 2), strides=(2, 2), padding='same')(c5)
         u6 = tf.keras.layers.concatenate([u6, c4])
-        c6 = tf.keras.layers.Conv2D(128, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(u6)
-        c6 = tf.keras.layers.Conv2D(128, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(c6)
+        c6 = tf.keras.layers.Conv2D(128, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(u6)
+        c6 = tf.keras.layers.Conv2D(128, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(c6)
 
         u7 = tf.keras.layers.Conv2DTranspose(64, (2, 2), strides=(2, 2), padding='same')(c6)
         u7 = tf.keras.layers.concatenate([u7, c3])
-        c7 = tf.keras.layers.Conv2D(64, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(u7)
-        c7 = tf.keras.layers.Conv2D(64, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(c7)
+        c7 = tf.keras.layers.Conv2D(64, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(u7)
+        c7 = tf.keras.layers.Conv2D(64, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(c7)
 
         u8 = tf.keras.layers.Conv2DTranspose(32, (2, 2), strides=(2, 2), padding='same')(c7)
         u8 = tf.keras.layers.concatenate([u8, c2])
-        c8 = tf.keras.layers.Conv2D(32, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(u8)
-        c8 = tf.keras.layers.Conv2D(32, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(c8)
+        c8 = tf.keras.layers.Conv2D(32, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(u8)
+        c8 = tf.keras.layers.Conv2D(32, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(c8)
 
         u9 = tf.keras.layers.Conv2DTranspose(16, (2, 2), strides=(2, 2), padding='same')(c8)
         u9 = tf.keras.layers.concatenate([u9, c1], axis=3)
-        c9 = tf.keras.layers.Conv2D(16, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(u9)
-        c9 = tf.keras.layers.Conv2D(16, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.1), kernel_initializer='he_normal', padding='same')(c9)
+        c9 = tf.keras.layers.Conv2D(16, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(u9)
+        c9 = tf.keras.layers.Conv2D(16, (3, 3), activation=lambda x : tf.nn.leaky_relu(x, alpha=0.2), kernel_initializer='he_normal', padding='same')(c9)
 
         outputs = tf.keras.layers.Conv2D(1, (1, 1), activation='sigmoid')(c9)
 
@@ -103,7 +103,7 @@ def main():
     train_y = np.divide(train_y, 255)
 
     model = unet(INPUT_DIMS, class_weight_bias=20)
-    history = model.fit(train_x, train_y, validation_split=0.1, batch_size=8, epochs=5, callbacks=tf.keras.callbacks.EarlyStopping(verbose=1, patience=2))
+    history = model.fit(train_x, train_y, validation_split=0.1, batch_size=8, epochs=10, callbacks=tf.keras.callbacks.EarlyStopping(monitor='loss', verbose=1, patience=2, restore_best_weights = 1))
 
     metrics = history.history
     plt.plot(history.epoch, metrics['loss'], metrics['val_loss'])
@@ -115,10 +115,18 @@ def main():
     test_y = np.load("test_y.npy")
     # previous bug: label values 0 or 255 instead of 0 or 1
     # should perhaps be done in preprocessing
-    test_y = np.divide(test_y, 255)
+    #test_y = np.divide(test_y, 255)
     test_x = [test_x]
     test_x = tf.expand_dims(test_x, -1)
     y = model.predict(test_x)
+    
+    for i in range(np.shape(y)[1]):
+        for j in range(np.shape(y)[2]):
+            if y[0,i,j,0] > 0.4:
+                y[0,i,j,0] = 1
+            else:
+                y[0,i,j,0] = 0
+
 
     plt.figure(0)
     plt.gray()
@@ -128,6 +136,11 @@ def main():
     plt.figure(1)
     plt.gray()
     plt.imshow(test_y)
+    plt.show()
+
+    plt.figure(2)
+    plt.gray()
+    plt.imshow(test_x[0,:,:,0,0])
     plt.show()
 
 
@@ -151,7 +164,7 @@ def create_subsample(n_samples):
 
     vv_test = vv[101]
     vh_test = vh[101]
-    y_test = labels[101]
+    y_test = labels[102]
 
     train_x = np.concatenate((sample_vv, sample_vh), axis=-1)
     test_x = np.concatenate((vv_test,vh_test), axis=-1)
@@ -163,5 +176,5 @@ def create_subsample(n_samples):
 
 
 if __name__ == '__main__':
-    create_subsample(7000)
+    create_subsample(500)
     main()
