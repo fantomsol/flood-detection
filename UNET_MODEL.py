@@ -25,13 +25,52 @@ def weighted_2d_bce(weight):
     return loss_func
 
 
-
-def build_model(input_size, class_weight_bias=1, print_summary=False):
+def build_model(input_size, feature_dims=tuple, class_weight_bias=1, print_summary=False):
     # Build the model
     inputs = tf.keras.layers.Input(input_size)
-    # should perhaps be done in preprocessing
+    x = inputs
+    skip_connections = []
 
-    # todo: generalize for parameter search, input feature sizes etc.
+    # Contraction path
+    for feature in feature_dims:
+        x = tf.keras.layers.Conv2D(feature, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(
+            x)
+        x = tf.keras.layers.Conv2D(feature, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(
+            x)
+
+        if feature != feature_dims[-1]:
+            skip_connections.append(x)
+            x = tf.keras.layers.MaxPooling2D((2, 2))(x)
+
+
+    # todo: implement conv layers in the bottleneck?
+
+    # Expansion path
+    for feature in reversed(feature_dims[:len(feature_dims) - 1]):
+        x = tf.keras.layers.Conv2DTranspose(feature, (2, 2), strides=(2, 2), padding='same')(x)
+        x = tf.keras.layers.concatenate([x, skip_connections[-1]])
+        del skip_connections[-1]
+        x = tf.keras.layers.Conv2D(feature, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(
+            x)
+        x = tf.keras.layers.Conv2D(feature, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(
+            x)
+
+    outputs = tf.keras.layers.Conv2D(1, (1, 1), activation='sigmoid')(x)
+
+    model = tf.keras.Model(inputs=[inputs], outputs=[outputs])
+
+    loss = weighted_2d_bce(class_weight_bias)
+    model.compile(optimizer='adam', loss=loss, metrics=['accuracy'])
+
+    if print_summary:
+        model.summary()
+
+    return model
+
+
+def build_model_ugly_implementation(input_size, class_weight_bias=1, print_summary=False):
+    # Build the model
+    inputs = tf.keras.layers.Input(input_size)
 
     # Contraction path
     c1 = tf.keras.layers.Conv2D(16, (3, 3), activation='relu', kernel_initializer='he_normal', padding='same')(inputs)
