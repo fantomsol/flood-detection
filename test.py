@@ -44,7 +44,6 @@ def img_proc():
     PATH = r"X:\FLOOD_PREDICT_DATA\train"
     remove_noise.remove_noise(PATH)
 
-
 def model_test():
     MODEL_PATH = "my_model_first.h5"
     IMG_PATH = r"X:\FLOOD_PREDICT_DATA\train"
@@ -58,6 +57,7 @@ def model_test():
     idxs = np.random.choice(range(train_gen.length), size=n_sample, replace=False)
 
     loss_func = UNET_MODEL.Weighted_BCE(weight=20)
+
 
     for idx in idxs:
         fig, axs = plt.subplots(2, 2, figsize=(8, 8))
@@ -92,7 +92,12 @@ def model_test():
                 ax = axs[row][col]
                 ax.imshow(plot_imgs[row][col], cmap="gray")
                 ax.set_title(plot_titles[row][col])
-                ax.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
+
+                ax.tick_params(left=False,
+                               bottom=False,
+                               labelleft=False,
+                               labelbottom=False)
+
         plt.show()
 
 
@@ -102,4 +107,3 @@ if __name__ == '__main__':
     temp = np.load("history_dict.npy", allow_pickle = True)
     pause = True
     hej = 1
-    # model_test()

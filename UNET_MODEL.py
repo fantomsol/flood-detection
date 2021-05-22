@@ -5,12 +5,13 @@ from tensorflow.keras.layers import Conv2D, Conv2DTranspose, MaxPooling2D
 
 # custom weighted binary crossentropy on 2d output
 # higher weight means higher penalty for getting 1's wrong
+
 class Weighted_BCE(tf.keras.losses.Loss):
     # input dims: [batch_size, img_width, img_height, 1]
     # output dims: [batch_size,]
     def __init__(self, weight=1):
         super(Weighted_BCE, self).__init__()
-        self.weight = weight
+
 
     def call(self, y_true, y_pred):
         # avoid inf/nan, more stable numerics
