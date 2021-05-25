@@ -11,6 +11,7 @@ import PIL
 
 ## remove "noise" pictures from directory data_dir
 ## only call remove_noise function on train/train
+## Not very foolproof, if run more than ones the filenames will be messed up!
 
 def remove_noise(data_dir):
     path = pathlib.Path(data_dir)
@@ -52,35 +53,3 @@ def rename_vv_vh(path):
 
 def is_noise_pic(pic):
     return np.median(np.asarray(PIL.Image.open(pic))) >= 255 or np.median(np.asarray(PIL.Image.open(pic))) == 0
-
-def deprecated_filter(data_dir):
-    print("Indexing files...")
-    path = pathlib.Path(data_dir)
-
-    areas = [p for p in path.iterdir() if p.is_dir()]
-    # print(areas)
-    for area in areas:
-        vh = area / 'tiles'/ 'vh'
-        pics = list(vh.glob('*.png'))
-        pics = np.array(natsort.natsorted(pics))
-        noise_args = np.array([i for i, pic in enumerate(pics) if is_noise_pic(pic)])
-        print('Num of noise pics is ' + f'{np.size(noise_args)}' + " out of " + f'{len(pics)}')
-
-    prompt = input("Would you like to delete these?(y/n)")
-
-    if prompt == "y":
-        print("Removing...")
-        for area in areas:
-            tiles = area / 'tiles'
-            subdirs = [x for x in tiles.iterdir() if x.is_dir()]
-            for path in subdirs:
-                pics = list(path.glob('*.png'))
-                pics = np.array(natsort.natsorted(pics))
-
-                rem_pics = pics[noise_args]
-                for pic in rem_pics:
-                    pic.unlink()
-        print("Done.")
-    else:
-        print("No pictures removed.")
-
